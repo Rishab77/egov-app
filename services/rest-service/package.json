@@ -1,0 +1,15 @@
+{
+  "name": "rest-service",
+  "version": "1.0.0",
+  "description": "REST implementation of the citizen services benchmark API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "dotenv": "^16.4.5"
+  }
+}
