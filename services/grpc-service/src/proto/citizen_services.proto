@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package citizenservices;
+
+// Mirrors shared/enums/applicationStatus.js — protobuf cannot import JS enums,
+// so this must be kept manually in sync if the shared enum changes.
+enum ApplicationStatus {
+  PENDING = 0;
+  UNDER_REVIEW = 1;
+  APPROVED = 2;
+  REJECTED = 3;
+  ISSUED = 4;
+}
+
+// Mirrors shared/enums/documentType.js
+enum DocumentType {
+  CITIZENSHIP_CERT = 0;
+  PASSPORT_COPY = 1;
+  LAND_DEED = 2;
+  TAX_CLEARANCE = 3;
+  RECOMMENDATION_LETTER = 4;
+}
+
+message Citizen {
+  int32 citizen_id = 1;
+  string full_name = 2;
+  string citizenship_no = 3;
+  string district = 4;
+  string province = 5;
+  string phone_number = 6;
+  string email = 7;
+  string date_of_birth = 8;
+  string created_at = 9;
+}
+
+message ServiceApplication {
+  int32 application_id = 1;
+  int32 citizen_id = 2;
+  string service_name = 3;
+  ApplicationStatus status = 4;
+  string submitted_at = 5;
+  string last_updated_at = 6;
+  string remarks = 7;
+}
+
+message Document {
+  int32 document_id = 1;
+  int32 citizen_id = 2;
+  int32 application_id = 3;
+  DocumentType document_type = 4;
+  string file_name = 5;
+  int32 file_size_bytes = 6;
+  string uploaded_at = 7;
+}
+
+message GetCitizenRequest {
+  int32 citizen_id = 1;
+}
+
+message ListCitizensRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ListCitizensResponse {
+  repeated Citizen items = 1;
+}
+
+message GetApplicationRequest {
+  int32 application_id = 1;
+}
+
+message ListApplicationsRequest {
+  int32 citizen_id = 1;
+}
+
+message ListApplicationsResponse {
+  repeated ServiceApplication items = 1;
+}
+
+message ListDocumentsRequest {
+  int32 citizen_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message ListDocumentsResponse {
+  repeated Document items = 1;
+}
+
+service CitizenServices {
+  rpc GetCitizenProfile(GetCitizenRequest) returns (Citizen);
+  rpc ListCitizens(ListCitizensRequest) returns (ListCitizensResponse);
+  rpc GetApplicationStatus(GetApplicationRequest) returns (ServiceApplication);
+  rpc ListApplicationsByCitizen(ListApplicationsRequest) returns (ListApplicationsResponse);
+  rpc ListDocumentsByCitizen(ListDocumentsRequest) returns (ListDocumentsResponse);
+}

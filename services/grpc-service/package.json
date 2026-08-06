@@ -1,0 +1,16 @@
+{
+  "name": "grpc-service",
+  "version": "1.0.0",
+  "description": "gRPC implementation of the citizen services benchmark API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.11.1",
+    "@grpc/proto-loader": "^0.7.13",
+    "pg": "^8.12.0",
+    "dotenv": "^16.4.5"
+  }
+}
