@@ -10,4 +10,6 @@ if command -v sudo >/dev/null 2>&1 && [ "$(id -u)" -ne 0 ]; then
 fi
 
 printf 'Resetting traffic-control rules on %s\n' "$INTERFACE"
-$SUDO tc qdisc del dev "$INTERFACE" root 2>/dev/null || true
+if $SUDO tc qdisc show dev "$INTERFACE" | grep -q 'netem'; then
+  $SUDO tc qdisc del dev "$INTERFACE" root
+fi

@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 RESULTS_DIR="${K6_RESULTS_DIR:-$ROOT_DIR/results}"
 mkdir -p "$RESULTS_DIR"
+K6_BIN="${K6_BIN:-k6}"
+
+cleanup() {
+  "$ROOT_DIR/scripts/tc/reset.sh"
+}
+trap cleanup EXIT INT TERM
 
 if [ "$#" -gt 0 ]; then
   PROFILES=("$@")
@@ -19,7 +25,7 @@ for profile in "${PROFILES[@]}"; do
     out_file="$RESULTS_DIR/${protocol}-${profile}.json"
     log_file="$RESULTS_DIR/${protocol}-${profile}.log"
     printf 'Running %s benchmark...\n' "$protocol"
-    k6 run "$ROOT_DIR/scripts/k6/${protocol}.test.js" --summary-export "$out_file" > "$log_file"
+    "$K6_BIN" run "$ROOT_DIR/scripts/k6/${protocol}.test.js" --summary-export "$out_file" > "$log_file"
   done
 
   "$ROOT_DIR/scripts/tc/reset.sh"

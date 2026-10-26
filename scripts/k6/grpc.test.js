@@ -10,15 +10,11 @@ export const options = {
 };
 
 const protoPath = __ENV.GRPC_PROTO_PATH || '../../services/grpc-service/src/proto/citizen_services.proto';
-
-let client;
+const client = new grpc.Client();
+client.load([], protoPath);
 
 export default function () {
-  if (!client) {
-    client = new grpc.Client();
-    client.load([], protoPath);
-    client.connect(GRPC_URL, { plaintext: true });
-  }
+  client.connect(GRPC_URL, { plaintext: true });
 
   const citizen = client.invoke('citizenservices.CitizenServices/GetCitizenProfile', { citizen_id: 1 });
   check(citizen, {
@@ -40,5 +36,6 @@ export default function () {
     'gRPC documents list OK': (r) => r && r.status === grpc.StatusOK,
   });
 
+  client.close();
   sleep(0.1);
 }
